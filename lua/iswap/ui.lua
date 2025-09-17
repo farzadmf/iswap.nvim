@@ -1,4 +1,3 @@
-local ts_utils = require('nvim-treesitter.ts_utils')
 local util = require('iswap.util')
 local err = util.err
 

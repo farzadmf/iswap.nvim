@@ -1,6 +1,5 @@
 local M = {}
 local util = require('iswap.util')
-local ts_utils = require('nvim-treesitter.ts_utils')
 local internal = require('iswap.internal')
 local err = util.err
 
