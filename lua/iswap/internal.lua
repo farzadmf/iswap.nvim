@@ -16,6 +16,17 @@ local function get_named_children(node)
   return children
 end
 
+-- Helper function to get node at cursor position
+local function get_node_at_cursor(winid)
+  local bufnr = vim.api.nvim_win_get_buf(winid)
+  local cursor = vim.api.nvim_win_get_cursor(winid)
+  local row, col = cursor[1] - 1, cursor[2]
+  local ft = vim.bo[bufnr].filetype
+  local lang = vim.treesitter.language.get_lang(ft) or ft
+  local root = vim.treesitter.get_parser(bufnr, lang):parse()[1]:root()
+  return root:descendant_for_range(row, col, row, col)
+end
+
 -- Helper function to swap two nodes or ranges in the buffer
 local function swap_nodes(node_or_range1, node_or_range2, bufnr)
   local start_row1, start_col1, end_row1, end_col1
@@ -63,8 +74,9 @@ function M.find(winid)
   -- NOTE: this root is freshly parsed, but this may not be the best way of getting a fresh parse
   --       see :h Query:iter_captures()
   local ft = vim.bo[bufnr].filetype
-  local root = vim.treesitter.get_parser(bufnr, ft_to_lang(ft)):parse()[1]:root()
-  local q = vim.treesitter.query.get(ft_to_lang(ft), 'iswap-list')
+  local lang = vim.treesitter.language.get_lang(ft) or ft
+  local root = vim.treesitter.get_parser(bufnr, lang):parse()[1]:root()
+  local q = vim.treesitter.query.get(lang, 'iswap-list')
   -- TODO: initialize correctly so that :ISwap is not callable on unsupported
   -- languages, if that's possible.
   if not q then
@@ -244,5 +256,8 @@ function M.detach(bufnr)
   -- TODO: Fill this with what you need to do when detaching from a buffer
 end
 
+-- Export helper functions
+M.get_named_children = get_named_children
+M.get_node_at_cursor = get_node_at_cursor
 
 return M

@@ -41,8 +41,8 @@ function M.prompt(bufnr, config, nodes, active_range, times)
   for i, node in ipairs(nodes) do
     local key = keys:sub(i, i)
     imap[key] = i
-    ts_utils.highlight_node(node, bufnr, M.iswap_ns, config.hl_selection)
-    local start_row, start_col = node:range()
+    local start_row, start_col, end_row, end_col = node:range()
+    vim.highlight.range(bufnr, M.iswap_ns, config.hl_selection, {start_row, start_col}, {end_row, end_col})
     vim.api.nvim_buf_set_extmark(bufnr, M.iswap_ns, start_row, start_col,
       { virt_text = { { key, config.hl_snipe } }, virt_text_pos = "overlay", hl_mode = "blend" })
   end

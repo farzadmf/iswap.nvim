@@ -99,7 +99,7 @@ function M.two_nodes_from_any(config)
   local winid = vim.api.nvim_get_current_win()
   local bufnr = vim.api.nvim_get_current_buf()
 
-  local cur_node = ts_utils.get_node_at_cursor(winid)
+  local cur_node = internal.get_node_at_cursor(winid)
   local parent = cur_node:parent()
 
   if not parent then
@@ -152,7 +152,7 @@ function M.two_nodes_from_any(config)
   -- we want to pick siblings of user selected node (thus:  usr_node:parent())
   local picked_node = ancestors[user_input[1]] -- for swap
   local picked_parent = picked_node:parent()
-  local children = ts_utils.get_named_children(picked_parent)
+  local children = internal.get_named_children(picked_parent)
   local sr, sc, er, ec = picked_parent:range()
 
   -- remove children if child:type() == 'comment'
@@ -203,7 +203,7 @@ function M.one_other_node_from_any(direction, config)
   local bufnr = vim.api.nvim_get_current_buf()
   local winid = vim.api.nvim_get_current_win()
 
-  local cursor_node = ts_utils.get_node_at_cursor(winid)
+  local cursor_node = internal.get_node_at_cursor(winid)
   local current_row, current_col = cursor_node:start()
 
   -- find outer parent :=  its start() is same as cursor_node:start()
@@ -231,7 +231,7 @@ function M.one_other_node_from_any(direction, config)
     err('No siblings found for swap', config.debug)
     return
   end
-  local children = ts_utils.get_named_children(outer_parent)
+  local children = internal.get_named_children(outer_parent)
   local sr, sc, er, ec = outer_parent:range()
 
   -- nothing to swap here
